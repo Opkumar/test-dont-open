@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #1a2942;
+  --secondary: #fbbf24;
+  --accent: #2563eb;
+  --background: #f3f4f6;
+  --text: #1f2937;
+}
+
+.star_8 {
+  background: #ff6b00;
+  width: 80px;
+  height: 80px;
+  position: relative;
+  transform: rotate(20deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star_8:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 80px;
+  width: 80px;
+  background: #ff6b00;
+  transform: rotate(135deg);
+}
+
+.star_8 svg {
+  position: relative;
+  z-index: 1;
+  color: white;
+  width: 40px;
+  height: 40px;
+  transform: rotate(-20deg); /* Counter-rotate the icon */
+}
+
+.star_8 img {
+  transform: rotate(-20deg);
+  z-index: 1;
+}
+
+.select-content {
+  @apply bg-orange-50 border-orange-200;
+}
+
+.select-item {
+  @apply text-orange-900 hover:bg-orange-100 hover:text-orange-950;
+}
+
+/* Style for all dropdown menus */
+[role="listbox"] {
+  @apply bg-orange-50 !important;
+}
+
+/* Style for dropdown items */
+[role="option"] {
+  @apply text-orange-900 hover:bg-orange-100 hover:text-orange-950 !important;
+}
+
+/* Style for dropdown content */
+.select-content,
+.dropdown-content {
+  @apply bg-orange-50 border-orange-200 !important;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+}
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
+.text-secondary {
+  color: var(--secondary);
+}
