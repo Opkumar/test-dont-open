@@ -26,6 +26,8 @@ export default function TeamPage({ teamMembers }) {
   );
 }
 
+const MAX_VISIBLE_WORDS = 40;
+
 function TeamMemberCard({ member, isReversed }) {
   const [showMore, setShowMore] = useState(false);
   const [showMoreWork, setShowMoreWork] = useState(false);
@@ -36,29 +38,42 @@ function TeamMemberCard({ member, isReversed }) {
     if (!experience) return [];
     return experience
       .split(/[•\n]/)
-      .map(item => item.trim())
-      .filter(item => item !== '');
+      .map((item) => item.trim())
+      .filter((item) => item !== "");
   };
 
   // Function to get visible items based on collapsed state
   const getVisibleItems = (items) => {
     if (showMoreWork) return items;
-    
-    // Show only first item completely
-    if (items.length <= 1) return items;
-    return items.slice(0, 3);
+    return items.length <= 1 ? items : items.slice(0, 3);
   };
 
   const workExperience = parseWorkExperience(member.workOfExperience);
   const hasMoreWork = workExperience.length > 1;
 
+  // Splitting description into smaller paragraphs
+  const paragraphs = (member.desc || "")
+    .split(/(?<=[.?!])\s+/)
+    .reduce((acc, sentence) => {
+      if (!acc.length || acc[acc.length - 1].length > 100) {
+        acc.push(sentence);
+      } else {
+        acc[acc.length - 1] += " " + sentence;
+      }
+      return acc;
+    }, []);
+
   return (
     <div
-      className={`grid grid-cols-1 md:grid-cols-2 gap-8 bg-white shadow-lg rounded-xl overflow-hidden ${isReversed ? "md:flex-row-reverse" : ""}`}
+      className={`grid grid-cols-1 md:grid-cols-2 gap-8 bg-white shadow-lg rounded-xl overflow-hidden ${
+        isReversed ? "md:flex-row-reverse" : ""
+      }`}
     >
       {/* Image Section */}
       <div
-        className={`relative w-full flex items-center justify-center ${isReversed ? "md:order-2" : "md:order-1"}`}
+        className={`relative w-full flex items-center justify-center ${
+          isReversed ? "md:order-2" : "md:order-1"
+        }`}
       >
         <Image
           src={urlFor(member.image).url()}
@@ -71,7 +86,9 @@ function TeamMemberCard({ member, isReversed }) {
 
       {/* Description Section */}
       <div
-        className={`p-6 md:p-8 flex flex-col justify-center space-y-6 ${isReversed ? "md:order-1" : "md:order-2"}`}
+        className={`p-6 md:p-8 flex flex-col justify-center space-y-6 ${
+          isReversed ? "md:order-1" : "md:order-2"
+        }`}
       >
         <h3 className="text-2xl md:text-3xl font-bold text-[#1a2942]">
           {member.name}
@@ -86,15 +103,16 @@ function TeamMemberCard({ member, isReversed }) {
               showMore ? "max-h-[1000px]" : "max-h-[100px]"
             }`}
           >
-            <p className="text-gray-600">{member.desc}</p>
+            {paragraphs.map((para, index) => (
+              <p key={index} className="text-gray-600 mb-2">{para}</p>
+            ))}
           </div>
-          {(member.desc || "").length > 100 && (
+
+          {/* Read More Button */}
+          {paragraphs.length > 1 && (
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowMore(!showMore);
-              }}
               className="text-purple-600 hover:underline transition-colors duration-200 mt-2"
+              onClick={() => setShowMore(!showMore)}
             >
               {showMore ? "Read Less" : "Read More"}
             </button>
@@ -129,9 +147,6 @@ function TeamMemberCard({ member, isReversed }) {
                   <span className="flex-grow">{experience}</span>
                 </li>
               ))}
-              {/* {!showMoreWork && hasMoreWork && (
-                <li className="text-gray-600">...</li>
-              )} */}
             </ul>
             {hasMoreWork && (
               <button
